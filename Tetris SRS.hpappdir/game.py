@@ -202,6 +202,7 @@ class Piece():
         ),
     )
 
+    # See https://harddrop.com/wiki/SRS#Wall_Kicks
     WALL_KICKS = {
         "JLSTZ": {
             (0, 1): [(0, 0), (-1, 0), (-1, 1), (0, -2), (-1, -2)],  # 0 -> R
@@ -476,7 +477,7 @@ class Keys():
             return False
 
     def get(self):
-
+        # TODO: Add Handling options for the input, line 627 for timer and explanation
         self.dx = 0
         self.hard_drop = False
         self.soft_drop = False
@@ -532,6 +533,7 @@ class PieceBag():
         self.next_pieces = []
 
         self.next_pieces = [self.get_piece_from_bag() for _ in range(max_next_preview)]
+        #Equivalent:
         #for i in range(max_next_preview):
         #    self.next_pieces.append(self.get_piece_from_bag())
 
@@ -581,12 +583,12 @@ class Hold():
         self.hold_piece = None
         self.can_hold = True
 
+    # Return the piece after using hold
     def process(self, current_piece):
         if self.hold_piece is None:
             self.hold_piece = current_piece
-            return None  # Aucune pièce en hold, donc une nouvelle pièce doit être générée
+            return None # No piece in Hold, None means take a piece in the bag
         else:
-            # Échanger la pièce en hold avec la pièce actuelle
             temp = self.hold_piece
             self.hold_piece = current_piece
             return temp
@@ -664,6 +666,7 @@ class Time():
         for time_thing in self.time_things:
             time_thing.rst()
 
+    # The only method I found for getting time on the calculator
     def get_time(self):
         return int(eval("ticks")) / 1000
     
@@ -747,6 +750,7 @@ class Game(PieceObserver):
     def ProcessInput(self):
         self.keys.get()
 
+        # TODO: Redo hold in a better way, should be in Hold class ?
         if self.keys.hold and self.hold.can_hold:
 
             self.hold.can_hold = False
@@ -771,16 +775,16 @@ class Game(PieceObserver):
     def run(self):
         try:
             while(1):
-                #starttime = int(eval("ticks"))
                 self.time.update()
                 self.ProcessEvent()
                 self.ProcessInput()
-                dimgrob(1,320,240,0) # Black screen to G1
+                #TODO: Not always wipes buffer layer, should be more optimised
+                dimgrob(1,320,240,0) # Black screen to layer G1
                 self.Draw()
-                blit(0,0,0,1) # copy G1 to G0
-                #if self.time.das() == True:
-                #print(self.time.das())
-                #eval("WAIT(0.0167)")
+                blit(0,0,0,1) # copy layer G1 to layer G0
+
+        # This prevents an error message on the calculator when On/Off is pressed for exiting the game.
+        # Exits the game now
         except KeyboardInterrupt:
             return 0
 
