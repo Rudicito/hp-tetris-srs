@@ -26,7 +26,7 @@ class Data:
         try:
             f = open('save.txt', 'r')
 
-        except:
+        except OSError:
             # Fail to open file (don't exist or corrupted). Get base configuration
             self.dictionary = base_dictionary
             return
