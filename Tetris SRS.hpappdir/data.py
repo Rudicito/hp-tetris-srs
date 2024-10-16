@@ -50,6 +50,19 @@ class Data:
             d[str(item[0])] = Var(item[1], convert_type(item[1], item[2]))
 
         f.close()
+
+        temp = base_dictionary.copy()
+
+        # Check if values from the save file are missing, at the end of the loop, temp is a dict with the keys missing
+        for key in d:
+            temp.pop(key, None)
+
+        # That means one or more values are missing from the save file
+        if len(temp) != 0:
+            for key in temp:
+                # Add the values missing using the base_dictionary
+                d[key] = base_dictionary[key]
+
         self.dictionary = d
 
     # Save the dictionary into the save file
