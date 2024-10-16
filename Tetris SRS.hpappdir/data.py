@@ -1,13 +1,10 @@
 """
 
-Data file named save.txt, is like :
+Data file is named save.txt, structured as follows:
 
-    max_score:int:4320;
-    das:float:0.167;
-    arr:float:0.033;
-
-Details :
-    name_of_the_value:type_of_the_value:value
+max_score:int:4320
+das:float:0.167
+arr:float:0.033
 
 Character "\n" separate the values
 
@@ -17,6 +14,7 @@ Character "\n" separate the values
 class Data:
 
     def __init__(self):
+        # Dictionary that holds all the data
         self.dictionary = {}
         self.get_values()
 
@@ -44,8 +42,8 @@ class Data:
             if len(item) != 3:
                 continue
 
-            # Normally now item like this : item = ["name", "type", "value"]
-            # They all string
+            # Normally now, item are like this : item = ["name", "type", "value"]
+            # all elements are str
 
             d[str(item[0])] = Var(item[1], convert_type(item[1], item[2]))
 
@@ -53,11 +51,12 @@ class Data:
 
         temp = base_dictionary.copy()
 
-        # Check if values from the save file are missing, at the end of the loop, temp is a dict with the keys missing
+        # Check if values from the save file are missing, check with base_dictionary
+        # at the end of the loop temp is a dict that contains the keys missing
         for key in d:
             temp.pop(key, None)
 
-        # That means one or more values are missing from the save file
+        # If true, means that one or more values are missing
         if len(temp) != 0:
             for key in temp:
                 # Add the values missing using the base_dictionary
@@ -114,7 +113,8 @@ class Var:
         self.value = convert_type(self.value_type, value)
 
 
-
+# Base configuration values used for initialization if no save file exists,
+# or to add some values if some are missing in the loaded file
 base_dictionary = {'best_time': Var("int", 0),
                    'ARR': Var("float", 0.033),
                    'DAS': Var("float", 0.167),
