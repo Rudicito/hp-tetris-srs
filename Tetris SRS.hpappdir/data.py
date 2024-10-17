@@ -117,6 +117,7 @@ class Var:
 # Base configuration values used for initialization if no save file exists,
 # or to add some values if some are missing in the loaded file
 base_dictionary = {'best_time': Var("int", 0),
+                   'gravity': Var("float", 1),
                    'ARR': Var("float", 0.033),
                    'DAS': Var("float", 0.167),
                    'DCD': Var("float", 0.017),
