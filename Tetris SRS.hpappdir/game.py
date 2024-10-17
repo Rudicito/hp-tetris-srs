@@ -1,4 +1,5 @@
 from sys import platform
+from data import Data
 
 if platform == "HP Prime":
     from hpprime import *
@@ -616,11 +617,12 @@ class Hold():
     
 class Time():
 
-    def __init__(self):
+    def __init__(self, data):
+        self.data = data
         time = self.get_time()
         self.time_things = []
 
-        self.gravity = self.TimeThing(1, time, False, True)
+        self.gravity = self.TimeThing(self.data("gravity"), time, False, True)
         self.time_things.append(self.gravity)
 
         self.lock_delay = self.TimeThing(1, time, False, False)
@@ -630,22 +632,22 @@ class Time():
 
         # Automatic Repeat Rate: 
         # The speed at which tetrominoes move when holding down movement keys
-        self.arr = self.TimeThing(0.033, time, False, True)
+        self.arr = self.TimeThing(self.data("ARR"), time, False, True)
         self.time_things.append(self.arr)
 
         # Delayed Auto Shift:
         # The time between the initial keypress and the start of its automatic repeat movement.
-        self.das = self.TimeThing(0.167, time, False, False)
+        self.das = self.TimeThing(self.data("DAS"), time, False, False)
         self.time_things.append(self.das)
 
         # DAS Cut Delay: 
         # If not 0, any ongoing DAS movement will pause for a set amount of time after dropping/rotating a piece, measured in frames.
-        self.dcd = self.TimeThing(0.017, time, False, True)
+        self.dcd = self.TimeThing(self.data("DCD"), time, False, True)
         self.time_things.append(self.dcd)
 
         # Soft Drop Factor: 
         # The factor with which soft drops change the gravity speed.
-        self.sdf = 4
+        self.sdf = self.data("SDF")
     
 
     def update(self):
@@ -716,7 +718,8 @@ class Game(PieceObserver):
     def __init__(self):
         self.gameover = False
         self.pieceinserted = False
-        self.time = Time()
+        self.data = Data()
+        self.time = Time(self.data)
         self.keys = Keys(self.time)
         self.board = Board(10, 20)
         self.piecebag = PieceBag(5, self.board)
@@ -739,7 +742,7 @@ class Game(PieceObserver):
         if self.pieceinserted:
             self.pieceinserted = False
             self.hold.can_hold = True
-            self.time.__init__()
+            self.time.__init__(self.data)
             self.piece.__init__(self, self.board, self.time, self.piecebag.get_piece())
             self.board.update_grid()
 
@@ -786,6 +789,7 @@ class Game(PieceObserver):
         # This prevents an error message on the calculator when On/Off is pressed for exiting the game.
         # Exits the game now
         except KeyboardInterrupt:
+            self.data.save()
             return 0
 
 
