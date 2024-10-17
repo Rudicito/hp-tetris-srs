@@ -69,6 +69,7 @@ class Data:
         f = open('save.txt', 'w')
         string = self.str_save()
         f.write(string)
+        f.close()
 
     # Return string to put in save file
     def str_save(self):
