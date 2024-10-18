@@ -312,17 +312,40 @@ class Piece():
         #if self.time.gravity.value != 0:
             #print(self.time.gravity.value)
 
+        # Move piece
+        dx = 0
+
+        if keys.just_pressed(keys.right):
+            dx += 1
+
+        if keys.just_pressed(keys.left):
+            dx -= 1
+
         # Collisions to the left and right
-        if keys.dx != 0:
-            self.pos_grid_i += max(-self.left_wall_distance(), min(keys.dx, self.right_wall_distance()))
+        if dx != 0:
+            self.pos_grid_i += max(-self.left_wall_distance(), min(dx, self.right_wall_distance()))
             #print(self.left_wall_distance(), self.right_wall_distance())
 
-        # Collisions if rotating
-        if keys.rotate != 0:
-            self.rotate(keys.rotate)
+        # Rotation
+        rotate = 0
 
-        # Do hard drop
-        if keys.hard_drop:
+        if keys.just_pressed(keys.rotate_counter_clockwise):
+            # Rotate counter-clockwise
+            rotate -= 1
+
+        if keys.just_pressed(keys.rotate_clockwise):
+            # Rotate clockwise
+            rotate += 1
+
+        if keys.just_pressed(keys.rotate_180):
+            # rotate to 180
+            rotate = 2
+
+        if rotate != 0:
+            self.rotate(rotate)
+
+        # Hard drop
+        if keys.just_pressed(keys.hard_drop):
             self.pos_grid_j -= self.drop_distance()
             self.insert_piece()
 
@@ -446,26 +469,17 @@ class Board():
 
 class Keys():
 
-    def __init__(self, time):
-        self.time = time
-        self.old_keyboard_input = keyboard()
-        
-        self.k_left = 7 # Left key
-        self.k_right = 8 # Right key
-        self.k_soft_drop = 12 # Down key
-        self.k_hard_drop = 2 # Up key
-        self.k_rotate_clockwise = 30 # Enter key
-        self.k_rotate_counter_clockwise = 24 # LN Key
-        self.k_rotate_180 = 25 # LOG Key= 7 # Left key
-        self.k_right = 8 # Right key
-        self.k_soft_drop = 12 # Down key
-        self.k_hard_drop = 2 # Up key
-        self.k_rotate_clockwise = 30 # Enter key
-        self.k_rotate_counter_clockwise = 24 # LN Key
-        self.k_rotate_180 = 25 # LOG Key
-        self.k_hold = 29 # , key
+    def __init__(self):
+        self.keyboard_input = keyboard()
 
-        self.k_hold = 29 # , key
+        self.left = 7 # Left key
+        self.right = 8 # Right key
+        self.soft_drop = 12 # Down key
+        self.hard_drop = 2 # Up key
+        self.rotate_clockwise = 30 # Enter key
+        self.rotate_counter_clockwise = 24 # LN Key
+        self.rotate_180 = 25 # LOG Key= 7
+        self.hold = 29 # , key
 
     def just_pressed(self, key):
         if self.old_keyboard_input & (1 << key) == False and self.keyboard_input & (1 << key) != False:
@@ -481,50 +495,9 @@ class Keys():
 
     def get(self):
         # TODO: Add Handling options for the input, line 627 for timer and explanation
-        self.dx = 0
-        self.hard_drop = False
-        self.soft_drop = False
-        self.hold = False
-        self.rotate = 0
-        
-        self.keyboard_input = keyboard()
-
-        # Horizontal movement
-        if self.just_pressed(self.k_right):
-            self.dx = 1
-
-        if self.just_pressed(self.k_left):
-            self.dx = -1
-
-
-        # Hard drop
-        if self.just_pressed(self.k_hard_drop):
-            self.hard_drop = True
-
-        # Soft Drop
-        if self.just_pressed(self.k_soft_drop):
-            self.soft_drop = True
-
-
-        #Rotation
-        if self.just_pressed(self.k_rotate_counter_clockwise):
-            # Rotate counter-clockwise
-            self.rotate -= 1
-
-        if self.just_pressed(self.k_rotate_clockwise):
-            # Rotate clockwise
-            self.rotate += 1
-        
-        if self.just_pressed(self.k_rotate_180):
-            #rotate to 180
-            self.rotate = 2
-        
-        if self.just_pressed(self.k_hold): # , key
-            self.hold = True
-        
-
 
         self.old_keyboard_input = self.keyboard_input
+        self.keyboard_input = keyboard()
 
 
 class PieceBag():
@@ -588,7 +561,7 @@ class Hold():
         self.can_hold = True
 
     def update(self, keys):
-        if keys.hold and self.can_hold:
+        if keys.just_pressed(keys.hold) and self.can_hold:
 
             self.can_hold = False
             self.observer.HoldSwitch()
@@ -727,7 +700,7 @@ class Game(PieceObserver):
         self.holdswitch = False
         self.data = Data()
         self.time = Time(self.data)
-        self.keys = Keys(self.time)
+        self.keys = Keys()
         self.board = Board(10, 20)
         self.piecebag = PieceBag(5, self.board)
         self.piece = Piece(self, self.board, self.time, self.piecebag.get_piece())
