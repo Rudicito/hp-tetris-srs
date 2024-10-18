@@ -695,7 +695,7 @@ class Time():
 
                 if self.elapsed_time >= self.countdown:
                     self.value = int(self.elapsed_time // self.countdown)
-                    self.elapsed_time = self.elapsed_time - self.value
+                    self.elapsed_time = self.elapsed_time - self.value * self.countdown
             
             self.old_time = current_time
         
