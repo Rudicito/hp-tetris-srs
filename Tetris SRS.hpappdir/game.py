@@ -587,13 +587,13 @@ class Hold():
         self.hold_piece = None
         self.can_hold = True
 
-    # Return the piece after using hold
     def update(self, keys):
         if keys.hold and self.can_hold:
 
             self.can_hold = False
             self.observer.HoldSwitch()
 
+    # Return the piece after using hold
     def process(self, current_piece):
         if self.hold_piece is None:
             self.hold_piece = current_piece
