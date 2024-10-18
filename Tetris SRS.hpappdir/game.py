@@ -23,6 +23,8 @@ class PieceObserver():
         pass
     def GameOver(self):
         pass
+    def HoldSwitch(self):
+        pass
 
 
 class Piece():
@@ -577,14 +579,21 @@ class PieceBag():
 
 
 class Hold():
-    def __init__(self, board):
+    def __init__(self, board, observer):
         self.board = board
+        self.observer = observer
         self.origin_x = self.board.origin_x - 6 * self.board.size + 1
         self.origin_y = self.board.origin_y
         self.hold_piece = None
         self.can_hold = True
 
     # Return the piece after using hold
+    def update(self, keys):
+        if keys.hold and self.can_hold:
+
+            self.can_hold = False
+            self.observer.HoldSwitch()
+
     def process(self, current_piece):
         if self.hold_piece is None:
             self.hold_piece = current_piece
@@ -715,13 +724,14 @@ class Game(PieceObserver):
     def __init__(self):
         self.gameover = False
         self.pieceinserted = False
+        self.holdswitch = False
         self.data = Data()
         self.time = Time(self.data)
         self.keys = Keys(self.time)
         self.board = Board(10, 20)
         self.piecebag = PieceBag(5, self.board)
         self.piece = Piece(self, self.board, self.time, self.piecebag.get_piece())
-        self.hold = Hold(self.board)
+        self.hold = Hold(self.board, self)
     
     def PieceInserted(self):
         self.pieceinserted = True
@@ -729,6 +739,8 @@ class Game(PieceObserver):
     def GameOver(self):
         self.gameover = True
 
+    def HoldSwitch(self):
+        self.holdswitch = True
     def ProcessGameOver(self):
         if self.gameover:
             self.gameover = False
@@ -743,28 +755,28 @@ class Game(PieceObserver):
             self.piece.__init__(self, self.board, self.time, self.piecebag.get_piece())
             self.board.update_grid()
 
-    def ProcessEvent(self):
-        self.ProcessPieceInserted()
-        self.ProcessGameOver()
-    
-    def ProcessInput(self):
-        self.keys.get()
-
-        # TODO: Redo hold in a better way, should be in Hold class ?
-        if self.keys.hold and self.hold.can_hold:
-
-            self.hold.can_hold = False
-
+    def ProcessHoldSwitch(self):
+        if self.holdswitch:
+            self.holdswitch = False
             piece = self.hold.process(self.piece.current_piece)
 
             del self.piece
 
-            if piece is None: 
+            if piece is None:
                 self.piece = Piece(self, self.board, self.time, self.piecebag.get_piece())
             else:
                 self.piece = Piece(self, self.board, self.time, piece)
 
+    def ProcessEvent(self):
+        self.ProcessGameOver()
+        self.ProcessPieceInserted()
+        self.ProcessHoldSwitch()
+    
+    def ProcessInput(self):
+        self.keys.get()
+
         self.piece.update_pos(self.keys)
+        self.hold.update(self.keys)
 
     def Draw(self):
         self.board.draw()
@@ -776,8 +788,8 @@ class Game(PieceObserver):
         try:
             while(1):
                 self.time.update()
-                self.ProcessEvent()
                 self.ProcessInput()
+                self.ProcessEvent()
                 #TODO: Not always wipes buffer layer, should be more optimised
                 dimgrob(1,320,240,0) # Black screen to layer G1
                 self.Draw()
