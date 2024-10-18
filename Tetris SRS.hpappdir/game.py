@@ -686,10 +686,7 @@ class Time():
 
             if self.running:
                 if self.value != 0:
-                    if self.reset:
-                        self.rst(self.elapsed_time)
-                    else:
-                        self.pause()
+                    self.rst(self.elapsed_time) if self.reset == True else self.pause()
 
                 self.elapsed_time += max(current_time - self.old_time, 0)
 
