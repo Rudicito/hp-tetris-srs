@@ -758,7 +758,8 @@ class Game(PieceObserver):
         if self.pieceinserted:
             self.pieceinserted = False
             self.hold.can_hold = True
-            self.time.__init__(self.data)
+            self.time.gravity.stop()
+            self.time.lock_delay.stop()
             self.piece.__init__(self, self.board, self.time, self.piecebag.get_piece())
             self.board.update_grid()
 
