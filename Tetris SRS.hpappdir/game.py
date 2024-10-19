@@ -312,14 +312,30 @@ class Piece():
         #if self.time.gravity.value != 0:
             #print(self.time.gravity.value)
 
-        # Move piece
+        # Handling, Horizontal Move
+
         dx = 0
 
-        if keys.just_pressed(keys.right):
-            dx += 1
+        if keys.just_pressed(keys.left) or keys.just_pressed(keys.right):
+            self.direction = -1 if keys.just_pressed(keys.left) else 1
+            self.time.das.start()
+            self.time.arr.stop()
 
-        if keys.just_pressed(keys.left):
-            dx -= 1
+            self.time.dcd.stop()
+            dx = 1 * self.direction
+
+        if keys.is_pressed(keys.left) or keys.is_pressed(keys.right):
+
+            if self.time.das() and self.time.dcd.running == False:
+                self.time.arr.resume()
+                if self.time.arr():
+                    dx = self.time.arr.value * self.direction
+
+        else:
+            self.time.das.stop()
+            self.time.arr.stop()
+
+        # self.last_direction = self.direction
 
         # Collisions to the left and right
         if dx != 0:
@@ -342,10 +358,14 @@ class Piece():
             rotate = 2
 
         if rotate != 0:
+            if self.left_wall_distance() == 0 or self.right_wall_distance() == 0 and self.time.das():
+                self.time.dcd.start()
             self.rotate(rotate)
 
         # Hard drop
         if keys.just_pressed(keys.hard_drop):
+            if self.left_wall_distance() == 0 or self.right_wall_distance() == 0 and self.time.das():
+                self.time.dcd.start()
             self.pos_grid_j -= self.drop_distance()
             self.insert_piece()
 
@@ -494,8 +514,6 @@ class Keys():
             return False
 
     def get(self):
-        # TODO: Add Handling options for the input, line 627 for timer and explanation
-
         self.old_keyboard_input = self.keyboard_input
         self.keyboard_input = keyboard()
 
