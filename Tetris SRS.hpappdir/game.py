@@ -650,6 +650,14 @@ class Time():
         for time_thing in self.time_things:
             time_thing.rst()
 
+    def start(self):
+        for time_thing in self.time_things:
+            time_thing.start()
+
+    def stop(self):
+        for time_thing in self.time_things:
+            time_thing.stop()
+
     # The only method I found for getting time on the calculator
     def get_time(self):
         return int(eval("ticks")) / 1000
@@ -688,6 +696,14 @@ class Time():
         def rst(self, elapsed_time = 0):
             self.elapsed_time = elapsed_time
             self.value = 0
+
+        def start(self):
+            self.rst()
+            self.resume()
+
+        def stop(self):
+            self.pause()
+            self.rst()
 
         def __call__(self):
             return False if self.value == 0 else True
