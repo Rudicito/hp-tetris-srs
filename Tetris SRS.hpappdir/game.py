@@ -642,7 +642,7 @@ class Time():
 
         # DAS Cut Delay: 
         # If not 0, any ongoing DAS movement will pause for a set amount of time after dropping/rotating a piece, measured in frames.
-        self.dcd = self.TimeThing(self.data("DCD"), time, False, True)
+        self.dcd = self.TimeThing(self.data("DCD"), time, False, False)
         self.time_things.append(self.dcd)
 
         # Soft Drop Factor: 
