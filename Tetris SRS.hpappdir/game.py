@@ -507,6 +507,12 @@ class Keys():
         else:
             return False
 
+    def just_released(self, key):
+        if self.old_keyboard_input & (1 << key) != False and self.keyboard_input & (1 << key) == False:
+            return True
+        else:
+            return False
+
     def is_pressed(self, key):
         if self.keyboard_input & (1 << key) != False:
             return True
