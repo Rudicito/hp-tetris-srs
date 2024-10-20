@@ -782,6 +782,9 @@ class Game(PieceObserver):
 
             del self.piece
 
+            self.time.gravity.stop()
+            self.time.lock_delay.stop()
+
             if piece is None:
                 self.piece = Piece(self, self.board, self.time, self.piecebag.get_piece())
             else:
