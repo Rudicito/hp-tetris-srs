@@ -26,7 +26,7 @@ class Data:
 
         except OSError:
             # Fail to open file (don't exist or corrupted). Get base configuration
-            self.dictionary = base_dictionary
+            self.reset()
             return
 
         d = {}
@@ -92,6 +92,11 @@ class Data:
     # Set one value onto dictionary
     def set(self, name, value):
         self.dictionary[str(name)].value = value
+
+    # Reset dictionary to base configuration
+    def reset(self):
+        self.dictionary = base_dictionary
+
 
 
 # Convert the value to the type in parameter
