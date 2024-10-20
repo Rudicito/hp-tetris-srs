@@ -324,6 +324,12 @@ class Piece():
             self.time.dcd.stop()
             dx = 1 * self.direction
 
+        if keys.just_released(keys.left) and keys.is_pressed(keys.right):
+            self.direction = 1
+
+        if keys.just_released(keys.right) and keys.is_pressed(keys.left):
+            self.direction = -1
+
         if keys.is_pressed(keys.left) or keys.is_pressed(keys.right):
 
             if self.time.das() and self.time.dcd.running == False:
