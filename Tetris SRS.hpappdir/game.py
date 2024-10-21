@@ -697,6 +697,7 @@ class Time():
         def __init__(self, countdown, current_time, running = True, reset = True):
             self.value = 0
             self.countdown = countdown
+            self.original_countdown = countdown
             self.running = running
             self.reset = reset
             self.elapsed_time = 0
@@ -715,8 +716,13 @@ class Time():
                     self.elapsed_time = self.elapsed_time - self.value * self.countdown
             
             self.old_time = current_time
-        
-        
+
+        def change_countdown(self, new_countdown):
+            # Adjust the elapsed time based on the reduction of the countdown
+            factor = new_countdown / self.countdown
+            self.elapsed_time *= factor
+            self.countdown = new_countdown
+
         def pause(self):
             self.running = False
 
