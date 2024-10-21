@@ -287,7 +287,16 @@ class Piece():
                         self.board.draw_block(self.to_grid_pos(i,j, pos_grid_i, pos_grid_j), color)
 
     def update_pos(self, keys):
-        
+
+        # Soft Drop
+        # TODO: Don't use Time class but another class named Handling for just the handing (the class Time should be less specific, more general)
+
+        if keys.just_pressed(keys.soft_drop):
+            self.time.gravity.change_countdown(self.time.gravity.countdown / self.time.sdf)
+
+        if keys.just_released(keys.soft_drop):
+            self.time.gravity.change_countdown(self.time.gravity.original_countdown)
+
         # Gravity and lock delay
 
         # If piece not lay on the bottom or another piece
