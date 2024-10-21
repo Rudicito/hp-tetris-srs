@@ -126,4 +126,4 @@ base_dictionary = {'best_time': Var("int", 0),
                    'ARR': Var("float", 0.033),
                    'DAS': Var("float", 0.167),
                    'DCD': Var("float", 0.017),
-                   'SDF': Var("int", 4)}
+                   'SDF': Var("int", 6)}
