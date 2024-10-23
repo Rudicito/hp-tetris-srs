@@ -465,6 +465,8 @@ class Board():
         self.size = 10
         self.origin_x = int((screen_width - self.cols * self.size - 1) // 2)
         self.origin_y = int((screen_height - self.rows_visible * self.size - 1) // 2)
+        self.total_line_cleared = 0
+        self.last_line_cleared = 0
 
     @property
     def board_height(self):
@@ -481,6 +483,7 @@ class Board():
                     self.draw_block((i, j), self.grid[i][j])
     
     def update_grid(self):
+        line_cleared = 0
         for j in range(self.rows):
             Remove = True
             while(Remove):
@@ -490,6 +493,11 @@ class Board():
                         break
                 if Remove:
                     self.remove_row(j)
+                    line_cleared += 1
+
+        if not line_cleared == 0:
+            self.last_line_cleared = line_cleared
+            self.total_line_cleared += self.last_line_cleared
 
     def remove_row(self,n):
         temp_len = self.rows - n
