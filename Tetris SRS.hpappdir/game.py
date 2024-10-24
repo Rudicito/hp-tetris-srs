@@ -564,6 +564,15 @@ class PieceBag():
 
         self.origin_x = self.board.origin_x + self.board.cols * self.board.size + 1
         self.origin_y = board.origin_y
+
+        self.size_x = 6 * self.board.size
+
+        self.size_y = (2 * self.max_next_preview + 6) * self.board.size
+
+        # If Piece Bag preview goes outside the screen, put origin_y just at the limit (1 more in origin_y and preview
+        # start going outside the screen
+        if self.size_y + self.origin_y >= 240:
+            self.origin_y = 240 - self.size_y
         
 
     def reset_bag(self):
@@ -580,7 +589,7 @@ class PieceBag():
         return piece
     
     def draw(self):
-        rect(1, self.origin_x, self.origin_y, 6 * self.board.size, (2 * self.max_next_preview + 6) * self.board.size, self.board.board_color)
+        rect(1, self.origin_x, self.origin_y, self.size_x, self.size_y, self.board.board_color)
 
         for i, piece in enumerate(self. next_pieces):
 
