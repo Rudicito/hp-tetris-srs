@@ -722,7 +722,10 @@ class Time():
     class TimeThing():
         def __init__(self, countdown, current_time, running = True, reset = True):
             self.value = 0
-            self.countdown = countdown
+            if countdown != 0:
+                self.countdown = countdown
+            else:
+                self.countdown = 0.000000001
             self.original_countdown = countdown
             self.running = running
             self.reset = reset
