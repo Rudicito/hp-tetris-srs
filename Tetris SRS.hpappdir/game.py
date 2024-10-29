@@ -512,17 +512,17 @@ class Board():
 
 class Keys():
 
-    def __init__(self):
+    def __init__(self, data):
         self.keyboard_input = keyboard()
 
-        self.left = 7 # Left key
-        self.right = 8 # Right key
-        self.soft_drop = 12 # Down key
-        self.hard_drop = 2 # Up key
-        self.rotate_clockwise = 30 # Enter key
-        self.rotate_counter_clockwise = 24 # LN Key
-        self.rotate_180 = 25 # LOG Key= 7
-        self.hold = 29 # , key
+        self.left = data("left")
+        self.right = data("right")
+        self.soft_drop =  data("soft_drop")
+        self.hard_drop = data("hard_drop")
+        self.rotate_clockwise =  data("rotate_clockwise")
+        self.rotate_counter_clockwise =  data("rotate_counter_clockwise")
+        self.rotate_180 =  data("rotate_180")
+        self.hold =  data("hold")
 
     def just_pressed(self, key):
         if self.old_keyboard_input & (1 << key) == False and self.keyboard_input & (1 << key) != False:
@@ -781,7 +781,7 @@ class Game(PieceObserver):
         self.holdswitch = False
         self.data = Data()
         self.time = Time(self.data)
-        self.keys = Keys()
+        self.keys = Keys(self.data)
         self.board = Board(10, 20)
         self.piecebag = PieceBag(5, self.board)
         self.piece = Piece(self, self.board, self.time, self.piecebag.get_piece())
