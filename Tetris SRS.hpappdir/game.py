@@ -815,15 +815,13 @@ class Game(PieceObserver):
             self.holdswitch = False
             piece = self.hold.process(self.piece.current_piece)
 
-            del self.piece
-
             self.time.gravity.stop()
             self.time.lock_delay.stop()
 
             if piece is None:
-                self.piece = Piece(self, self.board, self.time, self.piecebag.get_piece())
+                self.piece.__init__(self, self.board, self.time, self.piecebag.get_piece())
             else:
-                self.piece = Piece(self, self.board, self.time, piece)
+                self.piece.__init__(self, self.board, self.time, piece)
 
     def ProcessEvent(self):
         self.ProcessGameOver()
