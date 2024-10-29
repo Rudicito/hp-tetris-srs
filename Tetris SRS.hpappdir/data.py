@@ -121,9 +121,21 @@ class Var:
 
 # Base configuration values used for initialization if no save file exists,
 # or to add some values if some are missing in the loaded file
-base_dictionary = {'best_time': Var("int", 0),
+base_dictionary = { # Handling
+                   'best_time': Var("int", 0),
                    'gravity': Var("float", 1),
                    'ARR': Var("float", 0.033),
                    'DAS': Var("float", 0.167),
                    'DCD': Var("float", 0.017),
-                   'SDF': Var("int", 6)}
+                   'SDF': Var("int", 6),
+
+                    # Controls
+                   'left': Var("int", 7), # Left key
+                   'right': Var("int", 8), # Right key
+                   'soft_drop': Var("int", 12), # Down key
+                   'hard_drop': Var("int", 2), # Up key
+                   'rotate_clockwise': Var("int", 30), # Enter key
+                   'rotate_counter_clockwise': Var("int", 24), # LN Key
+                   'rotate_180': Var("int", 25), # LOG Key
+                   'hold': Var("int", 29),} # , key
+
